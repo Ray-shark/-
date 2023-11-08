@@ -78,7 +78,7 @@ export default {
       this.$refs.form.validate((isOK) => {
         // 如果校验通过 isOK=true
         if (isOK) {
-          alert('校验通过')
+          this.$store.dispatch('user/login', this.loginFrom)
         }
       })
     }

@@ -1,97 +1,39 @@
-import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
 
-const getDefaultState = () => {
-  return {
-    token: getToken(),
-    name: '',
-    avatar: ''
-  }
+// 作数据存放
+const state = {
+  token: getToken() // 从缓存中读取初始值token，该模块已经封装了基于cookie的缓存工具
 }
 
-const state = getDefaultState()
-
+// 作修改数据
 const mutations = {
-  RESET_STATE: (state) => {
-    Object.assign(state, getDefaultState())
-  },
-  SET_TOKEN: (state, token) => {
+  setToken(state, token) {
     state.token = token
+    // 同步到缓存,该模块已经封装了基于cookie的缓存工具，在auth.js中查看
+    setToken(token)
   },
-  SET_NAME: (state, name) => {
-    state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  removeToken() {
+    // 删除vuex的token
+    state.token = null
+    // 此处是用的工具auth.js中的删除缓存的方法，不是mutation中的
+    removeToken()
   }
 }
 
+// 作异步操作
 const actions = {
-  // user login
-  login({ commit }, userInfo) {
-    const { username, password } = userInfo
-    return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          return reject('Verification failed, please Login again.')
-        }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // user logout
-  logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-
-  // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      removeToken() // must remove  token  first
-      commit('RESET_STATE')
-      resolve()
-    })
+  // context上下文，传入参数
+  login(context, data) {
+    console.log(data)
+    // todo：调用登录接口
+    // 返回一个token 123456
+    context.commit('setToken', '123456')
   }
 }
 
 export default {
-  namespaced: true,
+  namespaced: true, // 开启命名空间（调用下面的state，mutation，action时必须带上模块名称user）
   state,
   mutations,
   actions
 }
-

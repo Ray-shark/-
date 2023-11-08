@@ -36,7 +36,15 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    // 服务器与服务器不存在同源策略，浏览器与服务器会产生跨域问题（不同源：协议、主机、端口等不同）使用vue-cli中代理服务器解决
+    proxy: {
+      // path: 目标服务器 百度，新浪，网易 ...
+      // 请求中存在 /api 就将请求转发给目标服务器
+      '/api': {
+        target: 'https://heimahr.itheima.net/'
+      }
+    }
+    // before: require('./mock/mock-server.js') // 基础模板做的模拟数据，会拦截请求
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
