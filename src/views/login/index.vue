@@ -33,9 +33,9 @@ export default {
     return {
       loginFrom: {
         // 判断是不是开发环境，区分环境取默认值
-        mobile: process.env.NODE_EVN === 'development' ? '13800000002' : '',
-        password: process.env.NODE_EVN === 'development' ? 'hm#qd@23!' : '',
-        isAgree: process.env.NODE_EVN === 'development'
+        mobile: process.env.NODE_ENV === 'development' ? '13800000002' : '',
+        password: process.env.NODE_ENV === 'development' ? 'hm#qd@23!' : '',
+        isAgree: process.env.NODE_ENV === 'development'
       },
       loginRules: {
         // 手机的两个规则
