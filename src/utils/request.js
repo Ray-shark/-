@@ -3,7 +3,8 @@ import store from '@/store'
 import { Message } from 'element-ui'
 
 const service = axios.create({
-  baseURL: '/api', // 基础地址(url前缀)
+  // 根据不同的生产环境取不同的api地址，process.evn.属性（.evn文件中）
+  baseURL: process.env.VUE_APP_BASE_API, // 基础地址(url前缀)
   timeout: 10000 // 超时时间（单位毫秒）
 }) // 创建一个axios实例
 // 请求拦截器，成功执行第一个，失败执行第二个
