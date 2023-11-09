@@ -2,6 +2,7 @@ import axios from 'axios'
 import store from '@/store'
 import { Message } from 'element-ui'
 
+// 二次封装axios
 const service = axios.create({
   // 根据不同的生产环境取不同的api地址，process.evn.属性（.evn文件中）
   baseURL: process.env.VUE_APP_BASE_API, // 基础地址(url前缀)

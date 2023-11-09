@@ -32,9 +32,10 @@ export default {
   data() {
     return {
       loginFrom: {
-        mobile: '',
-        password: '',
-        isAgree: false
+        // 判断是不是开发环境，区分环境取默认值
+        mobile: process.env.NODE_EVN === 'development' ? '13800000002' : '',
+        password: process.env.NODE_EVN === 'development' ? 'hm#qd@23!' : '',
+        isAgree: process.env.NODE_EVN === 'development'
       },
       loginRules: {
         // 手机的两个规则
@@ -75,10 +76,13 @@ export default {
   methods: {
     // 表单整体校验
     login() {
-      this.$refs.form.validate((isOK) => {
+      this.$refs.form.validate(async(isOK) => {
         // 如果校验通过 isOK=true
         if (isOK) {
-          this.$store.dispatch('user/login', this.loginFrom)
+          // Vuex中的action返回的是一个Promise
+          // 等待登录成功后才跳转主页
+          await this.$store.dispatch('user/login', this.loginFrom)
+          this.$router.push('/')
         }
       })
     }

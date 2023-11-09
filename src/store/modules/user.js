@@ -1,4 +1,5 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { login } from '@/api/user'
 
 // 作数据存放
 const state = {
@@ -23,11 +24,16 @@ const mutations = {
 // 作异步操作
 const actions = {
   // context上下文，传入参数
-  login(context, data) {
-    console.log(data)
+  async login(context, data) {
+    // console.log(data)
     // todo：调用登录接口
-    // 返回一个token 123456
-    context.commit('setToken', '123456')
+    try {
+      const token = await login(data)
+      // 返回一个token 123456
+      context.commit('setToken', token)
+    } catch (error) {
+      console.log('登录失败', error) // 处理Promise.reject(error)
+    }
   }
 }
 
