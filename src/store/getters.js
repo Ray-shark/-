@@ -3,8 +3,8 @@ const getters = {
   device: state => state.app.device,
   token: state => state.user.token,
   userID: state => state.user.userInfo.userID,
-  avatar: state => state.user.avatar,
-  name: state => state.user.name
+  avatar: state => state.user.userInfo.staffPhoto, // 头像
+  name: state => state.user.userInfo.username // 用户名称
 }
 // getters便捷访问（state.app.sidebar 变为了 getters.sidebar）
 export default getters
