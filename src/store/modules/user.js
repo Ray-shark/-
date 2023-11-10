@@ -32,8 +32,8 @@ const actions = {
     // console.log(data)
     // todo：调用登录接口
     try {
+      // 返回一个token
       const token = await login(data)
-      // 返回一个token 123456
       context.commit('setToken', token)
     } catch (error) {
       console.log('登录失败', error) // 处理Promise.reject(error)
@@ -42,6 +42,12 @@ const actions = {
   async getUserInfo(context) {
     const result = await getUserInfo()
     context.commit('setUserInfo', result)
+  },
+  logout(context) {
+    // 删除token
+    context.commit('removeToken')
+    // 清除用户信息
+    context.commit('setUserInfo', {})
   }
 }
 

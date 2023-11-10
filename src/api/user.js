@@ -1,4 +1,4 @@
-// 封装请求模块
+// 封装请求模块-接口调用
 import request from '@/utils/request'
 
 export function login(data) {

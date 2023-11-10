@@ -1,6 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import { Message } from 'element-ui'
+import router from '@/router'
 
 // 二次封装axios
 const service = axios.create({
@@ -34,7 +35,13 @@ service.interceptors.response.use((response) => {
     Message({ type: 'error', message: message })
     return Promise.reject(new Error(message))
   }
-}, (error) => {
+}, async(error) => { // token失效，与服务器不匹配，响应拦截器异常
+  if (error.response.status === 401) {
+    // 处理异常,删除token，用户信息
+    await store.dispatch('user/logout')
+    // 跳转到登录页
+    router.push('/login')
+  }
   // error.message是错误提示的消息
   // 可以用alert(error.message)
   // 这里用ElementUI中提供的Message方法
