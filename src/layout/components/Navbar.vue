@@ -8,7 +8,12 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- 头像 -->
-          <img :src="avatar" class="user-avatar">
+          <img v-if="avatar" :src="avatar" class="user-avatar">
+          <!-- name?.charAt(0)中的 ? 是可选链操作符
+           它的作用是在访问对象的属性之前，先判断对象是否为 null 或 undefined。
+           如果对象为 null 或 undefined，表达式的结果会立即返回 undefined，而不会抛出错误
+          -->
+          <span v-else class="userName">{{name?.charAt(0)}}</span>
           <!-- 用户名称 -->
           <span class="name">{{name}}</span>
           <!-- 图标 -->
@@ -130,6 +135,17 @@ export default {
           // 用户名称距离右侧距离
           margin-right: 10px;
           font-size: 16px;
+        }
+
+        .userName {
+          width: 30px;
+          height: 30px;
+          line-height: 30px;
+          text-align: center;
+          background-color: #04c9be;
+          border-radius: 50%;
+          color: #fff;
+          margin-right: 5px;
         }
 
         .el-icon-setting {
