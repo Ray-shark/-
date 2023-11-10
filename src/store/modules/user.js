@@ -4,7 +4,7 @@ import { login, getUserInfo } from '@/api/user'
 // 作数据存放
 const state = {
   token: getToken(), // 从缓存中读取初始值token，该模块已经封装了基于cookie的缓存工具
-  userInfo: getUserInfo() // 用于存储用户基本资料状态（数据）
+  userInfo: {} // 用于存储用户基本资料状态（数据）
 }
 
 // 作修改数据
