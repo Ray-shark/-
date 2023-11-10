@@ -1,9 +1,10 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { login } from '@/api/user'
+import { login, getUserInfo } from '@/api/user'
 
 // 作数据存放
 const state = {
-  token: getToken() // 从缓存中读取初始值token，该模块已经封装了基于cookie的缓存工具
+  token: getToken(), // 从缓存中读取初始值token，该模块已经封装了基于cookie的缓存工具
+  userInfo: getUserInfo() // 用于存储用户基本资料状态（数据）
 }
 
 // 作修改数据
@@ -18,6 +19,9 @@ const mutations = {
     state.token = null
     // 此处是用的工具auth.js中的删除缓存的方法，不是mutation中的
     removeToken()
+  },
+  setUserInfo(state, userInfo) {
+    state.userInfo = userInfo
   }
 }
 
@@ -34,6 +38,10 @@ const actions = {
     } catch (error) {
       console.log('登录失败', error) // 处理Promise.reject(error)
     }
+  },
+  async getUserInfo(context) {
+    const result = await getUserInfo()
+    context.commit('setUserInfo', result)
   }
 }
 

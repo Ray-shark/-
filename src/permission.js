@@ -6,7 +6,7 @@ import store from '@/store'
 const whiteList = ['/login', '/404']
 
 // 前置守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   // 开启进度条
   nprogress.start()
   // 查看是否有token
@@ -15,6 +15,10 @@ router.beforeEach((to, from, next) => {
       next('/') // 跳转到该路径
       nprogress.done() // 跳转路由后不会走后置守卫，需要手动关闭进度条
     } else {
+      // 判断是否获取过用户资料
+      if (!store.getters.userID) {
+        await store.dispatch('user/getUserInfo')
+      }
       next()
     }
   } else {
