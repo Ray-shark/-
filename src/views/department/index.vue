@@ -27,7 +27,7 @@
       </el-tree>
     </div>
     <!--  展示弹窗 此处的.sync表示自动监听update:showDialog事件，实现自动监听  -->
-    <add-department :show-dialog.sync="showDialog"></add-department>
+    <add-department :show-dialog.sync="showDialog" />
   </div>
 </template>
 
