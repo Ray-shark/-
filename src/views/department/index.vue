@@ -30,25 +30,28 @@
 </template>
 
 <script>
+import { getDepartment } from '@/api/department'
+import { transListToTreeData } from '@/utils'
+
 export default {
   name: 'Department',
   data() {
     return {
-      datas: [{
-        name: 'Z-Education',
-        children: [{
-          name: '总裁办'
-        }, {
-          name: '行政部'
-        }, {
-          name: '人事部'
-        }]
-      }], // 数据属性
+      datas: [], // 数据属性
       // 与datas中的属性对应
       defaultProps: [{
         label: 'name', // 要显示的字段的名字
         children: 'children' // 读取子节点的字段名
       }]
+    }
+  },
+  created() {
+    this.getDepartment()
+  },
+  methods: {
+    async getDepartment() {
+      const result = await getDepartment()
+      this.datas = transListToTreeData(result, 0)
     }
   }
 }
