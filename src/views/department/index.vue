@@ -27,7 +27,7 @@
       </el-tree>
     </div>
     <!--  展示弹窗 此处的.sync表示自动监听update:showDialog事件，实现自动监听  -->
-    <add-department :show-dialog.sync="showDialog" :current-node-id="currentNodeID" />
+    <add-department :show-dialog.sync="showDialog" :current-node-id="currentNodeId" @updateDepartment="getDepartment" />
   </div>
 </template>
 
@@ -40,7 +40,7 @@ export default {
   name: 'Department',
   data() {
     return {
-      currentNodeID: null, // 存储当前点击的id
+      currentNodeId: null, // 存储当前点击的id
       showDialog: false,
       datas: [], // 数据属性
       // 与datas中的属性对应
@@ -65,7 +65,7 @@ export default {
       if (type === 'add') {
         // 添加子部门
         this.showDialog = true
-        this.currentNodeID = id
+        this.currentNodeId = id
       }
     }
   }

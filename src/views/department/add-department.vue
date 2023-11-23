@@ -1,15 +1,15 @@
 <template>
   <div>
     <el-dialog title="新增部门" :visible="showDialog" @close="closeDialog">
-      <el-form label-width="100px" class="form" :rules="formRules" :model="dataForm">
-        <el-form-item label="部门名称" prop="depName">
-          <el-input v-model="dataForm.depName" style="width: 90%" placeholder="2-10个字符"/>
+      <el-form ref="addDept" label-width="100px" class="form" :rules="formRules" :model="dataForm">
+        <el-form-item label="部门名称" prop="name">
+          <el-input v-model="dataForm.name" style="width: 90%" placeholder="2-10个字符"/>
         </el-form-item>
-        <el-form-item label="部门编码" prop="depCode">
-          <el-input v-model="dataForm.depCode" style="width: 90%" placeholder="2-10个字符"/>
+        <el-form-item label="部门编码" prop="code">
+          <el-input v-model="dataForm.code" style="width: 90%" placeholder="2-10个字符"/>
         </el-form-item>
-        <el-form-item label="部门负责人" prop="managerID">
-          <el-select v-model="dataForm.managerID" style="width: 90%" placeholder="请选择负责人">
+        <el-form-item label="部门负责人" prop="managerId">
+          <el-select v-model="dataForm.managerId" style="width: 90%" placeholder="请选择负责人">
             <!-- 下拉选项，循环负责人数据 label表示显示的字段 value表示存储的数据 -->
             <el-option
               v-for="item in managerList"
@@ -19,12 +19,12 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="部门介绍" prop="description">
-          <el-input v-model="dataForm.description" style="width: 90%" :rows="4" type="textarea" placeholder="1-100个字符"/>
+        <el-form-item label="部门介绍" prop="introduce">
+          <el-input v-model="dataForm.introduce" style="width: 90%" :rows="4" type="textarea" placeholder="1-100个字符"/>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">确认</el-button>
-          <el-button>取消</el-button>
+          <el-button type="primary" @click="btnOK">确认</el-button>
+          <el-button @click="closeDialog">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { getDepartment, getManagerList } from '@/api/department'
+import { getDepartment, getManagerList, addDepartment } from '@/api/department'
 
 export default {
   name: 'AddDepartment',
@@ -41,7 +41,7 @@ export default {
       type: Boolean,
       default: false
     },
-    currentNodeID: {
+    currentNodeId: {
       type: Number,
       default: null
     }
@@ -54,13 +54,13 @@ export default {
       managerList: [], // 存储管理人列表
       dataForm: {
         pid: '', // 父级部门ID
-        depName: '', // 部门名称
-        depCode: '', // 部门编码
-        managerID: '', // 管理员ID
-        description: '' // 部门描述
+        name: '', // 部门名称
+        code: '', // 部门编码
+        managerId: '', // 管理员ID
+        introduce: '' // 部门描述
       },
       formRules: {
-        depName: [{
+        name: [{
           required: true,
           message: '请输入部门名称',
           trigger: 'blur'
@@ -83,7 +83,7 @@ export default {
             }
           }
         }],
-        depCode: [{
+        code: [{
           required: true,
           message: '请输入部门编码',
           trigger: 'blur'
@@ -106,7 +106,7 @@ export default {
             }
           }
         }],
-        manager: [{
+        managerId: [{
           required: true,
           message: '请选择一个负责人',
           trigger: 'blur'
@@ -125,10 +125,25 @@ export default {
   },
   methods: {
     closeDialog() {
+      // 重置表单
+      this.$refs.addDept.resetFields()
       this.$emit('update:showDialog', false)
     },
     async getManagerList() {
       this.managerList = await getManagerList()
+    },
+    // 点击确认时调用
+    btnOK() {
+      this.$refs.addDept.validate(async isOK => {
+        if (isOK) {
+          await addDepartment({ ...this.dataForm, pid: this.currentNodeId })
+          // 通知父组件更新
+          this.$emit('updateDepartment')
+          // 提示消息
+          this.$message.success('新增部门成功')
+          this.closeDialog()
+        }
+      })
     }
   }
 }
