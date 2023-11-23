@@ -10,8 +10,13 @@
         </el-form-item>
         <el-form-item label="部门负责人" prop="managerID">
           <el-select v-model="dataForm.managerID" style="width: 90%" placeholder="请选择负责人">
-            <el-option value="a">a</el-option>
-            <el-option value="b">b</el-option>
+            <!-- 下拉选项，循环负责人数据 label表示显示的字段 value表示存储的数据 -->
+            <el-option
+              v-for="item in managerList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.username"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="部门介绍" prop="description">
@@ -27,7 +32,7 @@
 </template>
 
 <script>
-import { getDepartment } from '@/api/department'
+import { getDepartment, getManagerList } from '@/api/department'
 
 export default {
   name: 'AddDepartment',
@@ -37,8 +42,12 @@ export default {
       default: false
     }
   },
+  created() {
+    this.getManagerList()
+  },
   data() {
     return {
+      managerList: [], // 存储管理人列表
       dataForm: {
         pid: '', // 父级部门ID
         depName: '', // 部门名称
@@ -113,6 +122,9 @@ export default {
   methods: {
     closeDialog() {
       this.$emit('update:showDialog', false)
+    },
+    async getManagerList() {
+      this.managerList = await getManagerList()
     }
   }
 }
