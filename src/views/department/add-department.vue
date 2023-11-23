@@ -40,6 +40,10 @@ export default {
     showDialog: {
       type: Boolean,
       default: false
+    },
+    currentNodeID: {
+      type: Number,
+      default: null
     }
   },
   created() {
