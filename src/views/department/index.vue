@@ -27,12 +27,12 @@
       </el-tree>
     </div>
     <!--  展示弹窗 此处的.sync表示自动监听update:showDialog事件，实现自动监听  -->
-    <add-department ref="addDept" :show-dialog.sync="showDialog" :current-node-id="currentNodeId" @updateDepartment="getDepartment" />
+    <add-department ref="addDept" :show-dialog.sync="showDialog" :current-node-id="currentNodeId" @updateDepartment="getDepartment"/>
   </div>
 </template>
 
 <script>
-import { getDepartment } from '@/api/department'
+import { getDepartment, delDepartment } from '@/api/department'
 import { transListToTreeData } from '@/utils'
 import AddDepartment from '@/views/department/add-department'
 
@@ -76,6 +76,15 @@ export default {
         // 父组件调用子组件方法来获取数据
         this.$nextTick(() => {
           this.$refs.addDept.getDepartmentDetail() // this.$refs.addDept 等同于子组件的 this
+        })
+      } else {
+        // 删除部门
+        this.$confirm('确定删除该部门吗').then(async() => {
+          await delDepartment(id)
+          // 提示消息
+          this.$message.success('删除数据成功')
+          // 更新列表
+          this.getDepartment()
         })
       }
     }
