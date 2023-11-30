@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="新增部门" :visible="showDialog" @close="closeDialog">
+    <el-dialog :title="showTitle" :visible="showDialog" @close="closeDialog">
       <el-form ref="addDept" label-width="100px" class="form" :rules="formRules" :model="dataForm">
         <el-form-item label="部门名称" prop="name">
           <el-input v-model="dataForm.name" style="width: 90%" placeholder="2-10个字符"/>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { getDepartment, getManagerList, addDepartment, getDepartmentDetail } from '@/api/department'
+import { getDepartment, getManagerList, addDepartment, getDepartmentDetail, updateDepartment } from '@/api/department'
 
 export default {
   name: 'AddDepartment',
@@ -75,7 +75,7 @@ export default {
           validator: async(rule, value, callback) => {
             // value就是输入的名称
             let result = await getDepartment()
-            // 判断是否为编辑操作
+            // 判断是否为编辑操作，通过弹层有无id区别新增与编辑
             if (this.dataForm.id) {
               result = result.filter(item => item.id !== this.dataForm.id)
             }
@@ -133,8 +133,16 @@ export default {
   },
   methods: {
     closeDialog() {
-      // 重置表单
-      this.$refs.addDept.resetFields()
+      // 重置表单,resetFields只能重置在模板中绑定的数据,不能重置获取的data中的id
+      // 手动重置表单，让表单只包含下面的数据
+      this.dataForm = {
+        pid: '', // 父级部门ID
+        name: '', // 部门名称
+        code: '', // 部门编码
+        managerId: '', // 管理员ID
+        introduce: '' // 部门描述
+      }
+      // this.$refs.addDept.resetFields()
       this.$emit('update:showDialog', false)
     },
     async getManagerList() {
@@ -144,11 +152,20 @@ export default {
     btnOK() {
       this.$refs.addDept.validate(async isOK => {
         if (isOK) {
-          await addDepartment({ ...this.dataForm, pid: this.currentNodeId })
+          let mes = '新增'
+          // 通过dataForm中的id区别场景
+          if (this.dataForm.id) {
+            // 编辑场景
+            mes = '更新'
+            await updateDepartment(this.dataForm)
+          } else {
+            // 新增场景
+            await addDepartment({ ...this.dataForm, pid: this.currentNodeId })
+          }
           // 通知父组件更新
           this.$emit('updateDepartment')
           // 提示消息
-          this.$message.success('新增部门成功')
+          this.$message.success(`${mes}部门成功`)
           this.closeDialog()
         }
       })
@@ -156,6 +173,12 @@ export default {
     // 获取组织的详情
     async getDepartmentDetail() {
       this.dataForm = await getDepartmentDetail(this.currentNodeId)
+    }
+  },
+  computed: {
+    showTitle() {
+      // 有id弹层显示编辑部门，没id显示新增部门
+      return this.dataForm.id ? '编辑部门' : '新增部门'
     }
   }
 }
