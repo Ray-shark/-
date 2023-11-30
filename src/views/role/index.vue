@@ -11,7 +11,7 @@
         <el-table-column prop="name" align="center" width="200" label="角色">
           <template v-slot="{ row }">
             <!-- 条件判断 -->
-            <el-input v-if="row.isEdit" size="mini"/>
+            <el-input v-if="row.isEdit" v-model="row.editRow.name" size="mini"/>
             <span v-else>{{ row.name }}</span>
           </template>
         </el-table-column>
@@ -20,13 +20,13 @@
           <!-- 插槽，ElementUI文档中查看传入对象有哪些数据，解构需要的数据 -->
           <template v-slot="{ row }">
             <!-- {{row}} -->
-            <el-switch v-if="row.isEdit"/>
+            <el-switch v-if="row.isEdit" v-model="row.editRow.state" :active-value="1" :inactive-value="0"/>
             <span v-else>{{ row.state === 1 ? '已启用' : row.state === 0 ? '未启用' : '无' }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="description" align="center" label="描述">
           <template v-slot="{ row }">
-            <el-input v-if="row.isEdit" type="textarea"/>
+            <el-input v-if="row.isEdit" v-model="row.editRow.description" type="textarea" size="mini"/>
             <span v-else>{{ row.description }}</span>
           </template>
         </el-table-column>
@@ -135,6 +135,12 @@ export default {
         // 添加的动态属性 不具备响应式特点，没加到_data中
         // this.$set(目标对象，属性名称，初始值) 可以针对目标对象添加响应式属性
         this.$set(item, 'isEdit', false)
+        // 缓存每行数据editRow
+        this.$set(item, 'editRow', {
+          name: item.name,
+          state: item.state,
+          description: item.description
+        })
       })
     },
     // 切换分页时请求新的数据
@@ -161,6 +167,10 @@ export default {
     // 点击编辑行
     btnEditRow(row) {
       row.isEdit = true // 改变行的编辑状态
+      // 更新缓存数据
+      row.editRow.name = row.name
+      row.editRow.state = row.state
+      row.editRow.description = row.description
     }
   }
 }
