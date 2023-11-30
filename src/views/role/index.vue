@@ -40,14 +40,14 @@
       </el-row>
     </div>
     <!-- 放置弹层 -->
-    <el-dialog title="新增角色" :visible.sync="showDialog">
+    <el-dialog title="新增角色" :visible.sync="showDialog" @close="btnCancel">
       <!-- 表单内容 -->
-      <el-form label-width="100px" :model="roleForm" :rules="roleRules">
+      <el-form ref="roleForm" label-width="100px" :model="roleForm" :rules="roleRules">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="roleForm.name" style="width: 550px" size="mini"/>
         </el-form-item>
-        <!-- 只有需要校验的属性才在表单项中写prop属性 -->
-        <el-form-item label="启用">
+        <!-- 只有需要校验的属性或者在重置表单时才在表单项中写prop属性 -->
+        <el-form-item label="启用" prop="state">
           <!-- active-value:自定义开启时元素的值 inactive-value:关闭时 -->
           <el-switch v-model="roleForm.state" :active-value="1" :inactive-value="0" size="mini"/>
         </el-form-item>
@@ -57,8 +57,8 @@
         <el-form-item>
           <el-row type="flex" justify="center">
             <el-col :span="12">
-              <el-button size="mini" type="primary">确定</el-button>
-              <el-button size="mini">取消</el-button>
+              <el-button size="mini" type="primary" @click="btnOK">确定</el-button>
+              <el-button size="mini" @click="btnCancel">取消</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -67,7 +67,7 @@
   </div>
 </template>
 <script>
-import { getRoleList } from '@/api/role'
+import { getRoleList, addRole } from '@/api/role'
 
 export default {
   name: 'Role',
@@ -114,6 +114,21 @@ export default {
       // newPage：当前页码  从elUI中current-change事件传入的newPage
       this.pageParams.page = newPage
       this.getRoleList()
+    },
+    btnOK() {
+      this.$refs.roleForm.validate(async isOK => {
+        if (isOK) {
+          await addRole(this.roleForm)
+          this.$message.success('新增角色成功')
+          // 刷新列表
+          this.getRoleList()
+          this.btnCancel()
+        }
+      })
+    },
+    btnCancel() {
+      this.$refs.roleForm.resetFields()
+      this.showDialog = false // 关闭弹层
     }
   }
 }
