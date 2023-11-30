@@ -27,7 +27,7 @@
       </el-tree>
     </div>
     <!--  展示弹窗 此处的.sync表示自动监听update:showDialog事件，实现自动监听  -->
-    <add-department :show-dialog.sync="showDialog" :current-node-id="currentNodeId" @updateDepartment="getDepartment" />
+    <add-department ref="addDept" :show-dialog.sync="showDialog" :current-node-id="currentNodeId" @updateDepartment="getDepartment" />
   </div>
 </template>
 
@@ -65,7 +65,18 @@ export default {
       if (type === 'add') {
         // 添加子部门
         this.showDialog = true
-        this.currentNodeId = id
+        this.currentNodeId = id // 记录id，用它来记录pid
+      } else if (type === 'edit') {
+        // 编辑部门
+        this.showDialog = true
+        this.currentNodeId = id // 记录id，用它来获取数据
+        // 更新props，props的更新传递是异步的
+        // 下面却直接调用了子组件的方法 方法是同步的，所以拿不到id,得用nextTick()
+        // 要在子组件获取数据 => 子组件中才使用数据
+        // 父组件调用子组件方法来获取数据
+        this.$nextTick(() => {
+          this.$refs.addDept.getDepartmentDetail() // this.$refs.addDept 等同于子组件的 this
+        })
       }
     }
   }

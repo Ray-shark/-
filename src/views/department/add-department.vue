@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { getDepartment, getManagerList, addDepartment } from '@/api/department'
+import { getDepartment, getManagerList, addDepartment, getDepartmentDetail } from '@/api/department'
 
 export default {
   name: 'AddDepartment',
@@ -144,6 +144,10 @@ export default {
           this.closeDialog()
         }
       })
+    },
+    // 获取组织的详情
+    async getDepartmentDetail() {
+      this.dataForm = await getDepartmentDetail(this.currentNodeId)
     }
   }
 }
