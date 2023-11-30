@@ -74,7 +74,11 @@ export default {
           // 自定义校验，查看是否和已有名称重复
           validator: async(rule, value, callback) => {
             // value就是输入的名称
-            const result = await getDepartment()
+            let result = await getDepartment()
+            // 判断是否为编辑操作
+            if (this.dataForm.id) {
+              result = result.filter(item => item.id !== this.dataForm.id)
+            }
             // result数组中是否存在value值
             if (result.some(item => item.code === value)) {
               callback(new Error('部门中已经有该名称了'))
@@ -97,7 +101,11 @@ export default {
           // 自定义校验，查看是否和已有部门重复
           validator: async(rule, value, callback) => {
             // value就是输入的编码
-            const result = await getDepartment()
+            let result = await getDepartment()
+            // 判断是否为编辑操作
+            if (this.dataForm.id) {
+              result = result.filter(item => item.id !== this.dataForm.id)
+            }
             // result数组中是否存在value值
             if (result.some(item => item.code === value)) {
               callback(new Error('部门中已经有该编码了'))
