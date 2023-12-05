@@ -2,7 +2,17 @@
   <div class="container">
     <div class="app-container">
       <div class="left">
-        <el-input style="margin-bottom:10px" type="text" prefix-icon="el-icon-search" size="small" placeholder="输入员工姓名全员搜索"/>
+        <!-- @input:在input值发生改变时触发、@change:在失去焦点或者用户按下回车时触发 -->
+        <!-- 模糊查询是通过查询参数queryParams的keyword传给后端，后端处理作查询返回对应的rows -->
+        <el-input
+          v-model="queryParams.keyword"
+          style="margin-bottom:10px"
+          type="text"
+          prefix-icon="el-icon-search"
+          size="small"
+          placeholder="输入员工姓名全员搜索"
+          @input="changeValue"
+        />
         <!-- 树形组件，需要到时候去ElementUI里面查 -->
         <!-- node-key:树节点唯一标识，:data:树里面的数据，
         :props:label表示展示data里面的哪个属性，children表示子树是data中哪个属性，
@@ -88,7 +98,8 @@ export default {
       queryParams: {
         departmentId: null,
         page: 1,
-        pageSize: 10
+        pageSize: 10,
+        keyword: ''
       },
       total: 0, // 记录员工总数
       list: [] // 存储员工列表的数据
@@ -128,6 +139,16 @@ export default {
     changePage(newPage) {
       this.queryParams.page = newPage
       this.getEmployeeList()
+    },
+    // 搜索输入值内容改变时触发
+    changeValue() {
+      // 防抖
+      // 在this的实例上赋值了一个timer属性
+      clearTimeout(this.timer) // 清理上一次定时器，第一次为空
+      this.timer = setTimeout(() => {
+        this.queryParams.page = 1
+        this.getEmployeeList()
+      }, 800)
     }
   }
 }
