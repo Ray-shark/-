@@ -21,3 +21,24 @@ export function exprotEmployee() {
     timeout: 0 // 提高优先级，这个接口响应时间长，大概12秒。不写的话，封装的axios中会报错超时。或者修改响应报错时间
   })
 }
+
+/**
+ * 下载员工的excel导入模板
+ */
+export function getExportTemplate() {
+  return request({
+    url: '/sys/user/import/template',
+    responseType: 'blob' // 二进制文件流
+  })
+}
+
+/**
+ * 上传员工(上传Excel)
+ */
+export function uploadExcel(data) {
+  return request({
+    url: '/sys/user/import',
+    method: 'post',
+    data // 此处data为form-data(表单)类型，因为要上传文件   有请求体body参数时用data
+  })
+}

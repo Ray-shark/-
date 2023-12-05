@@ -78,7 +78,7 @@
       </div>
     </div>
     <!-- 放置导入组件 .sync修改子组件相同变量时父组件变量值也跟着改 -->
-    <ImportExcel :show-excel-dialog.sync="showExcelDialog"/>
+    <ImportExcel :show-excel-dialog.sync="showExcelDialog" @uploadSuccess="getEmployeeList"/>
   </div>
 </template>
 
