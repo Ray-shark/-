@@ -59,7 +59,10 @@
         <el-row type="flex" style="height: 60px" align="middle" justify="end">
           <el-pagination
             layout="total, prev, pager, next"
-            :total="1000"
+            :total="total"
+            :current-page="queryParams.page"
+            :page-size="queryParams.pageSize"
+            @current-change="changePage"
           />
         </el-row>
       </div>
@@ -76,15 +79,18 @@ export default {
   name: 'Employee',
   data() {
     return {
-      depts: [], // 组织数据
+      depts: [], // 树组织数据
       defaultProps: {
         label: 'name', // 显示data数据中的name
         children: 'children'
       },
       // 存储查询参数
       queryParams: {
-        departmentId: null
+        departmentId: null,
+        page: 1,
+        pageSize: 10
       },
+      total: 0, // 记录员工总数
       list: [] // 存储员工列表的数据
     }
   },
@@ -109,11 +115,19 @@ export default {
     // 切换树节点时改变查询参数（departmentId）
     selectNode(node) {
       this.queryParams.departmentId = node.id
+      this.queryParams.page = 1
+      this.getEmployeeList()
     },
     // 获取员工列表的方法
     async getEmployeeList() {
-      const { rows } = await getEmployeeList(this.queryParams)
+      const { rows, total } = await getEmployeeList(this.queryParams)
       this.list = rows
+      this.total = total
+    },
+    // 切换页码,el-pagination的current-change事件会传入newPage（当前页）参数
+    changePage(newPage) {
+      this.queryParams.page = newPage
+      this.getEmployeeList()
     }
   }
 }
