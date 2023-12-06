@@ -12,7 +12,7 @@ export default {
     }
   }, {
     path: '/employee/detail', // 员工详情的地址
-    component: () => import('@/views/employee/components/detail'),
+    component: () => import('@/views/employee/detail'),
     hidden: true, // 表示隐藏在左侧菜单(不显示该二级路由导航)
     meta: {
       title: '员工详情'
