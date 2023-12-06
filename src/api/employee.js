@@ -42,3 +42,13 @@ export function uploadExcel(data) {
     data // 此处data为form-data(表单)类型，因为要上传文件   有请求体body参数时用data
   })
 }
+
+/**
+ * 删除员工
+ */
+export function delEmployee(id) {
+  return request({
+    url: `/sys/user/${id}`,
+    method: 'delete'
+  })
+}
