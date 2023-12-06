@@ -40,6 +40,7 @@
                 <!-- inputW样式会给到selectTree中 template第一层的组件 -->
                 <select-tree
                   class="inputW"
+                  v-model="userInfo.departmentId"
                 />
               </el-form-item>
             </el-col>
