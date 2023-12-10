@@ -25,7 +25,10 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="手机" prop="mobile">
+                <!-- disable只取true or false两个布尔值 等号后面相当于if条件 -->
+                <!-- 当中的两个!! 第一个表示将$route.params.id的字符串值取反变为布尔值 第二个将这个布尔值再取反 -->
                 <el-input
+                  :disabled="!!$route.params.id"
                   size="mini"
                   class="inputW"
                   v-model="userInfo.mobile"
@@ -103,7 +106,7 @@
 
 <script>
 import SelectTree from '@/views/employee/components/select-tree'
-import { addEmployee, getEmployeeDetail } from '@/api/employee'
+import { addEmployee, getEmployeeDetail, updateEmployee } from '@/api/employee'
 
 export default {
   components: {
@@ -159,9 +162,17 @@ export default {
     saveData() {
       this.$refs.userForm.validate(async isOK => {
         if (isOK) {
-          // 校验通过
-          await addEmployee(this.userInfo)
-          this.$message.success('新增员工成功')
+          // 判断是否为编辑模式
+          if (this.$route.params.id) {
+            // 编辑模式 此时已经通过getEmployeeDetail方法在userInfo中添加了id
+            await updateEmployee(this.userInfo)
+            this.$message('更新成功')
+          } else {
+            // 新增模式
+            // 校验通过
+            await addEmployee(this.userInfo)
+            this.$message.success('新增员工成功')
+          }
           this.$router.push('/employee')
         }
       })
