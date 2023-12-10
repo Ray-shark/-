@@ -59,14 +59,14 @@
           <el-table-column prop="timeOfEntry" label="入职时间" sortable/>
           <el-table-column label="操作" width="280px">
             <template v-slot="{ row }">
-              <el-button type="text" size="mini">查看</el-button>
+              <el-button type="text" size="mini" @click="$router.push(`/employee/detail/${row.id}`)">查看</el-button>
               <el-button type="text" size="mini">角色</el-button>
               <!-- 气泡框 -->
               <el-popconfirm
                 title="确定删除该行数据吗？"
                 @onConfirm="confirmDel(row.id)"
               >
-                <el-button slot="reference" size="mini" type="text">删除</el-button>
+                <el-button slot="reference" style="margin-left:10px" size="mini" type="text">删除</el-button>
               </el-popconfirm>
             </template>
           </el-table-column>

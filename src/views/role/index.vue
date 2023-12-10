@@ -47,7 +47,7 @@
                 title="确定删除吗"
                 @onConfirm="confirmDel(row.id)"
               >
-                <el-button slot="reference" size="mini" type="text">删除</el-button>
+                <el-button slot="reference" style="margin-left:10px" size="mini" type="text">删除</el-button>
               </el-popconfirm>
             </template>
           </template>

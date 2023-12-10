@@ -11,7 +11,7 @@ export default {
       icon: 'people'
     }
   }, {
-    path: '/employee/detail', // 员工详情的地址
+    path: '/employee/detail/:id?', // 员工详情的地址 原路由：/employee/detail  动态路由：在原路由的基础上加上/  :id是给后面的参数取名  ?表示可以有id也可以没有
     component: () => import('@/views/employee/detail'),
     hidden: true, // 表示隐藏在左侧菜单(不显示该二级路由导航)
     meta: {

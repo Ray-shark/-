@@ -103,7 +103,7 @@
 
 <script>
 import SelectTree from '@/views/employee/components/select-tree'
-import { addEmployee } from '@/api/employee'
+import { addEmployee, getEmployeeDetail } from '@/api/employee'
 
 export default {
   components: {
@@ -148,6 +148,13 @@ export default {
 
     }
   },
+  created() {
+    // 通过$route获取路由信息，$router是路由器可以进行路由的操作（如跳转）,$route存储的是当前路由信息
+    // 获取路由参数中的id
+    if (this.$route.params.id) {
+      this.getEmployeeDetail()
+    }
+  },
   methods: {
     saveData() {
       this.$refs.userForm.validate(async isOK => {
@@ -158,6 +165,9 @@ export default {
           this.$router.push('/employee')
         }
       })
+    },
+    async getEmployeeDetail() {
+      this.userInfo = await getEmployeeDetail(this.$route.params.id)
     }
   }
 }
