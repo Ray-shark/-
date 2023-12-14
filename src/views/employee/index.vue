@@ -60,7 +60,7 @@
           <el-table-column label="操作" width="280px">
             <template v-slot="{ row }">
               <el-button type="text" size="mini" @click="$router.push(`/employee/detail/${row.id}`)">查看</el-button>
-              <el-button type="text" size="mini" @click="btnRole">角色</el-button>
+              <el-button type="text" size="mini" @click="btnRole(row.id)">角色</el-button>
               <!-- 气泡框 -->
               <el-popconfirm
                 title="确定删除该行数据吗？"
@@ -92,13 +92,20 @@
         <!-- 放置n个checkbox 要指定checkbox的存储值(label) -->
         <el-checkbox v-for="item in roleList" :key="item.id" :label="item.id">{{ item.name }}</el-checkbox>
       </checkbox_group>
+      <!-- 确定和取消 -->
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button type="primary" size="mini" @click="btnRoleOK">确定</el-button>
+          <el-button size="mini" @click="showRoleDialog=false">取消</el-button>
+        </el-col>
+      </el-row>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { getDepartment } from '@/api/department'
-import { getEmployeeList, exprotEmployee, delEmployee, getEnableRoleList } from '@/api/employee'
+import { getEmployeeList, exprotEmployee, delEmployee, getEnableRoleList, getEmployeeDetail, assignRole } from '@/api/employee'
 import { transListToTreeData } from '@/utils'
 import FileSaver from 'file-saver'
 import ImportExcel from '@/views/employee/components/import-excel'
@@ -113,6 +120,7 @@ export default {
       depts: [], // 树组织数据
       roleList: [], // 角色列表
       roleIds: [], // 用来双向绑定角色数据
+      currentUserId: null, // 用来记录当前点击用户的id
       defaultProps: {
         label: 'name', // 显示data数据中的name
         children: 'children'
@@ -193,10 +201,22 @@ export default {
       this.$message.success('删除员工成功')
     },
     // 点击角色按钮弹出层
-    async btnRole() {
-      this.showRoleDialog = true
+    async btnRole(id) {
       this.roleList = await getEnableRoleList()
-
+      // 记录当前点击的id
+      this.currentUserId = id
+      const { roleIds } = await getEmployeeDetail(id)
+      this.roleIds = roleIds
+      this.showRoleDialog = true // 先获取接口再显示，避免切换迟缓
+    },
+    // 点击角色的确定
+    async btnRoleOK() {
+      await assignRole({
+        id: this.currentUserId,
+        roleIds: this.roleIds
+      })
+      this.$message('分配用户角色成功')
+      this.showRoleDialog = false
     }
   }
 }
