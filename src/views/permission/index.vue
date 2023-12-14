@@ -16,6 +16,27 @@
         </el-table-column>
       </el-table>
     </div>
+    <!-- 弹层 -->
+    <el-dialog :visible.sync="showDialog">
+      <el-form :model="formData" :rules="formRules">
+        <el-form-item label="权限名称">
+          <el-input/>
+        </el-form-item>
+        <el-form-item label="权限标识">
+          <el-input/>
+        </el-form-item>
+        <el-form-item label="权限描述">
+          <el-input type="textarea"/>
+        </el-form-item>
+        <el-form-item label="开启">
+
+        </el-form-item>
+        <el-row type="flex" justify="end" align="middle">
+          <el-button type="primary" size="mini">确定</el-button>
+          <el-button size="mini">取消</el-button>
+        </el-row>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -26,7 +47,14 @@ export default {
   name: 'Permission',
   data() {
     return {
-      list: []
+      list: [],
+      showDialog: false,
+      formData: {
+
+      },
+      formRules: {
+
+      }
     }
   },
   created() {

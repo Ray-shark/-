@@ -60,7 +60,7 @@
           <el-table-column label="操作" width="280px">
             <template v-slot="{ row }">
               <el-button type="text" size="mini" @click="$router.push(`/employee/detail/${row.id}`)">查看</el-button>
-              <el-button type="text" size="mini">角色</el-button>
+              <el-button type="text" size="mini" @click="btnRole">角色</el-button>
               <!-- 气泡框 -->
               <el-popconfirm
                 title="确定删除该行数据吗？"
@@ -85,12 +85,20 @@
     </div>
     <!-- 放置导入组件 .sync修改子组件相同变量时父组件变量值也跟着改 -->
     <ImportExcel :show-excel-dialog.sync="showExcelDialog" @uploadSuccess="getEmployeeList"/>
+    <el-dialog :visible.sync="showRoleDialog" title="分配角色">
+      <!-- 弹层内容 -->
+      <!-- checkbox_group v-model绑定存储的是所有选中项中label存的值，将每个值存成一个数组 -->
+      <checkbox_group v-model="roleIds">
+        <!-- 放置n个checkbox 要指定checkbox的存储值(label) -->
+        <el-checkbox v-for="item in roleList" :key="item.id" :label="item.id">{{ item.name }}</el-checkbox>
+      </checkbox_group>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getDepartment } from '@/api/department'
-import { getEmployeeList, exprotEmployee, delEmployee } from '@/api/employee'
+import { getEmployeeList, exprotEmployee, delEmployee, getEnableRoleList } from '@/api/employee'
 import { transListToTreeData } from '@/utils'
 import FileSaver from 'file-saver'
 import ImportExcel from '@/views/employee/components/import-excel'
@@ -103,6 +111,8 @@ export default {
   data() {
     return {
       depts: [], // 树组织数据
+      roleList: [], // 角色列表
+      roleIds: [], // 用来双向绑定角色数据
       defaultProps: {
         label: 'name', // 显示data数据中的name
         children: 'children'
@@ -116,7 +126,8 @@ export default {
       },
       total: 0, // 记录员工总数
       list: [], // 存储员工列表的数据
-      showExcelDialog: false // 用来控制excel弹层的显示
+      showExcelDialog: false, // 用来控制excel弹层的显示
+      showRoleDialog: false // 用来控制角色弹层的显示
     }
   },
   created() {
@@ -180,6 +191,12 @@ export default {
       }
       this.getEmployeeList()
       this.$message.success('删除员工成功')
+    },
+    // 点击角色按钮弹出层
+    async btnRole() {
+      this.showRoleDialog = true
+      this.roleList = await getEnableRoleList()
+
     }
   }
 }
