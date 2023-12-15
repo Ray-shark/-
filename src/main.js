@@ -39,6 +39,25 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
+// 注册自定义指令 控制功能权限
+Vue.directive('permission', {
+  // 会在指令作用的元素插入dom之后执行
+  inserted(el, binding) {
+    // el是当前指令作用的dom对象
+    // binding是v-permission="表达式" 表达式的意思
+    // ?是指当该属性为空后，不继续往下读了，直接取值[]，避免报错
+    const points = store.state.user.userInfo?.roles?.points || []
+    // points是传来的响应数据属性，用来判断按钮显示的权限
+    // points中是否有add-employee
+    // binding.value: v-permission="表达式" 表达式的值
+    if (!points.includes(binding.value)) {
+      // 删除或者禁用
+      el.remove()
+      // el.disabled = true
+    }
+  }
+})
+
 // new Vue({
 //   el: '#app',
 //   router,
