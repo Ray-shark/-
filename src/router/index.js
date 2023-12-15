@@ -61,12 +61,11 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: '首页', icon: 'dashboard' }
     }]
-  },
+  }
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
 ]
 
-// 导出动态路由
+// 导出动态路由，由角色权限决定是否展示页面，一般在路由前置守卫处理
 export const asyncRoutes = [
   departmentRouter,
   approvalRouter,

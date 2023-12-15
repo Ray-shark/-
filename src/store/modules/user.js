@@ -42,6 +42,7 @@ const actions = {
   async getUserInfo(context) {
     const result = await getUserInfo()
     context.commit('setUserInfo', result)
+    return result // 返回数据
   },
   logout(context) {
     // 删除token
