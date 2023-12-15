@@ -4,7 +4,8 @@ const getters = {
   token: state => state.user.token,
   userID: state => state.user.userInfo.userID,
   avatar: state => state.user.userInfo.staffPhoto, // 头像
-  name: state => state.user.userInfo.username // 用户名称
+  name: state => state.user.userInfo.username, // 用户名称
+  routes: state => state.user.routes
 }
 // getters便捷访问（state.app.sidebar 变为了 getters.sidebar）
 export default getters

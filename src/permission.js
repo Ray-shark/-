@@ -25,13 +25,12 @@ router.beforeEach(async(to, from, next) => {
         const filterRoutes = asyncRoutes.filter(item => {
           return roles.menus.includes(item.name) // return true/false
         }) // 筛选后的路由
+        // 向vuex中添加拥有的路由权限,加载导航栏sidebar
+        store.commit('user/setRoutes', filterRoutes)
         // 404页面必须在所有页面的最后（routes数组的最后）
         router.addRoutes([...filterRoutes, { path: '*', redirect: '/404', hidden: true }]) // 添加动态路由信息到路由表
-        // router添加动态路由之后，需要转发一下(往目标地址再跳一次)
-        next(to.path) // 目的是让路由拥有信息 router的已知缺陷，不能直接放过next
-      } else {
-        next() // 放过
       }
+      next()
     }
   } else {
     if (whiteList.includes(to.path)) {
