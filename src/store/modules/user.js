@@ -1,6 +1,7 @@
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { login, getUserInfo } from '@/api/user'
 import { constantRoutes } from '@/router'
+import { resetRouter } from '@/router'
 // 作数据存放
 const state = {
   token: getToken(), // 从缓存中读取初始值token，该模块已经封装了基于cookie的缓存工具
@@ -53,6 +54,8 @@ const actions = {
     context.commit('removeToken')
     // 清除用户信息
     context.commit('setUserInfo', {})
+    // 重置路由
+    resetRouter()
   }
 }
 
