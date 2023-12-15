@@ -16,7 +16,7 @@ const mutations = {
     // 同步到缓存,该模块已经封装了基于cookie的缓存工具，在auth.js中查看
     setToken(token)
   },
-  removeToken() {
+  removeToken(state) {
     // 删除vuex的token
     state.token = null
     // 此处是用的工具auth.js中的删除缓存的方法，不是mutation中的
@@ -44,6 +44,7 @@ const actions = {
       console.log('登录失败', error) // 处理Promise.reject(error)
     }
   },
+  // 获取用户的基本资料
   async getUserInfo(context) {
     const result = await getUserInfo()
     context.commit('setUserInfo', result)

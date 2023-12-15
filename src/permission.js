@@ -4,9 +4,8 @@ import 'nprogress/nprogress.css'
 import store from '@/store'
 import { asyncRoutes } from '@/router'
 
-const whiteList = ['/login', '/404']
-
 // 前置守卫
+const whiteList = ['/login', '/404']
 router.beforeEach(async(to, from, next) => {
   // 开启进度条
   nprogress.start()
@@ -17,7 +16,7 @@ router.beforeEach(async(to, from, next) => {
       nprogress.done() // 跳转路由后不会走后置守卫，需要手动关闭进度条
     } else {
       // 判断是否获取过用户资料
-      if (!store.getters.userID) {
+      if (!store.getters.userId) {
         // 解构用户信息中的roles属性
         const { roles } = await store.dispatch('user/getUserInfo')
         // console.log(roles.menus) // 角色拥有权限的数组 数量不确定
@@ -29,8 +28,11 @@ router.beforeEach(async(to, from, next) => {
         store.commit('user/setRoutes', filterRoutes)
         // 404页面必须在所有页面的最后（routes数组的最后）
         router.addRoutes([...filterRoutes, { path: '*', redirect: '/404', hidden: true }]) // 添加动态路由信息到路由表
+        // router添加动态路由之后 需要转发一下
+        next(to.path) // 目的是让路由拥有信息 router的已知缺陷
+      } else {
+        next()
       }
-      next()
     }
   } else {
     if (whiteList.includes(to.path)) {
